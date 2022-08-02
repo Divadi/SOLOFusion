@@ -354,10 +354,10 @@ class BEVDepth_Base():
         loss_weight = (~(depth_gt == 0)).reshape(B, N, 1, H, W).expand(B, N,
                                                                        self.img_view_transformer.D,
                                                                        H, W)
-        depth_gt = torch.clip(torch.floor(depth_gt) -
-                              self.img_view_transformer.grid_config['dbound'][
-                                  0],
-                              0, self.img_view_transformer.D).to(torch.long)
+        depth_gt = (depth_gt - self.img_view_transformer.grid_config['dbound'][0])\
+                   /self.img_view_transformer.grid_config['dbound'][2]
+        depth_gt = torch.clip(torch.floor(depth_gt), 0,
+                              self.img_view_transformer.D).to(torch.long)
         depth_gt_logit = F.one_hot(depth_gt.reshape(-1),
                                    num_classes=self.img_view_transformer.D)
         depth_gt_logit = depth_gt_logit.reshape(B, N, H, W,

@@ -162,7 +162,7 @@ train_pipeline = [
         flip_ratio_bev_horizontal=0.5,
         flip_ratio_bev_vertical=0.5,
         update_img2lidar=True),
-    dict(type='PointToMultiViewDepth',),
+    dict(type='PointToMultiViewDepth', grid_config=grid_config),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectNameFilter', classes=class_names),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
@@ -185,7 +185,7 @@ test_pipeline = [
         load_dim=5,
         use_dim=5,
         file_client_args=file_client_args),
-    dict(type='PointToMultiViewDepth', ),
+    dict(type='PointToMultiViewDepth', grid_config=grid_config),
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1333, 800),
@@ -209,7 +209,7 @@ eval_pipeline = [
         load_dim=5,
         use_dim=5,
         file_client_args=file_client_args),
-    dict(type='PointToMultiViewDepth', ),
+    dict(type='PointToMultiViewDepth', grid_config=grid_config),
     dict(
         type='DefaultFormatBundle3D',
         class_names=class_names,

@@ -13,9 +13,9 @@ from mmdet.datasets.pipelines import LoadAnnotations, LoadImageFromFile
 
 @PIPELINES.register_module()
 class PointToMultiViewDepth(object):
-    def __init__(self, downsample=16, num_depth=59, object=False):
+    def __init__(self, grid_config, downsample=16):
         self.downsample = downsample
-        self.num_depth = num_depth
+        self.grid_config=grid_config
 
     def points2depthmap(self, points, height, width, canvas=None):
         height, width = height//self.downsample, width//self.downsample
@@ -24,7 +24,8 @@ class PointToMultiViewDepth(object):
         depth = points[:,2]
         kept1 = (coor[:, 0] >= 0) & (coor[:, 0] < width) \
                & (coor[:, 1] >= 0) & (coor[:, 1] < height) \
-                & (depth < 60) & (depth >= 1.)
+                & (depth < self.grid_config['dbound'][1]) \
+                & (depth >= self.grid_config['dbound'][0])
         coor, depth = coor[kept1], depth[kept1]
         ranks = coor[:, 0] + coor[:, 1] * width
         sort = (ranks+depth/100.).argsort()
