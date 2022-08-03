@@ -4,17 +4,16 @@
  ![Illustrating the performance of the proposed BEVDet on the nuScenes val set](./resources/nds-fps.png)
  
 ## News
-* **2022.06.01** We release the code and models of both BEVDet and BEVDet4D!
-* **2022.04.01** We propose BEVDet4D to lift the scalable BEVDet paradigm from the spatial-only 3D space to the spatial-temporal 4D space. Technical report is released on arixv. \[[BEVDet4D](https://arxiv.org/abs/2203.17054)\].
-* **2022.04.01** We upgrade the BEVDet paradigm with some modifications to improve its performance and inference speed. **Thchnical report of BEVDet has been updated.** \[[BEVDetv1](https://arxiv.org/abs/2112.11790)\].
-* **2021.12.23** BEVDet is now on arxiv. \[[BEVDet](https://arxiv.org/abs/2112.11790)\].
-
-## Update
 * **2022.07.29** Support BEVDepth.
 * **2022.07.26** Add configs and pretrained models of bevdet-r50 and bevdet4d-r50.
 * **2022.07.13** Support bev-pool proposed in [BEVFusion](https://github.com/mit-han-lab/bevfusion), which will speed up the training process of bevdet-tiny by +25%.
 * **2022.07.08** Support visualization remotely! Please refer to [Get Started](https://github.com/HuangJunJie2017/BEVDet#get-started) for usage.
 * **2022.06.29** Support acceleration of the Lift-Splat-Shoot view transformer! Please refer to \[[Technical Report](https://arxiv.org/abs/2112.11790)\] for detailed introduction and [Get Started](https://github.com/HuangJunJie2017/BEVDet#get-started) for testing BEVDet with acceleration.
+* **2022.06.01** We release the code and models of both BEVDet and BEVDet4D!
+* **2022.04.01** We propose BEVDet4D to lift the scalable BEVDet paradigm from the spatial-only 3D space to the spatial-temporal 4D space. Technical report is released on arixv. \[[BEVDet4D](https://arxiv.org/abs/2203.17054)\].
+* **2022.04.01** We upgrade the BEVDet paradigm with some modifications to improve its performance and inference speed. **Thchnical report of BEVDet has been updated.** \[[BEVDetv1](https://arxiv.org/abs/2112.11790)\].
+* **2021.12.23** BEVDet is now on arxiv. \[[BEVDet](https://arxiv.org/abs/2112.11790)\].
+
 
 ## Main Results
 | Method            | mAP      | NDS     | FPS    |Mem (MB) |   Model | Log

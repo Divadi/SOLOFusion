@@ -246,20 +246,29 @@ class BEVDetSequentialES(BEVDetSequential):
         grid = torch.stack((xs, ys, torch.ones_like(xs)), -1).view(1, h, w, 3).expand(n, h, w, 3).view(n,h,w,3,1)
         grid = grid
 
-        # get transformation from current frame to adjacent frame
-        l02c = torch.zeros((n,v,4,4),dtype=grid.dtype).to(grid)
-        l02c[:,:,:3,:3] = rots[0]
-        l02c[:,:,:3,3] = trans[0]
-        l02c[:,:,3,3] =1
+        # get transformation from current lidar frame to adjacent lidar frame
+        # transformation from current camera frame to current lidar frame
+        c02l0 = torch.zeros((n,v,4,4),dtype=grid.dtype).to(grid)
+        c02l0[:,:,:3,:3] = rots[0]
+        c02l0[:,:,:3,3] = trans[0]
+        c02l0[:,:,3,3] = 1
 
-        l12c = torch.zeros((n,v,4,4),dtype=grid.dtype).to(grid)
-        l12c[:,:,:3,:3] = rots[1]
-        l12c[:,:,:3,3] = trans[1]
-        l12c[:,:,3,3] =1
-        # l0tol1 = l12c.matmul(torch.inverse(l02c))[:,0,:,:].view(n,1,1,4,4)
-        l0tol1 = l02c.matmul(torch.inverse(l12c))[:,0,:,:].view(n,1,1,4,4)
+        # transformation from adjacent camera frame to current lidar frame
+        c12l0 = torch.zeros((n,v,4,4),dtype=grid.dtype).to(grid)
+        c12l0[:,:,:3,:3] = rots[1]
+        c12l0[:,:,:3,3] = trans[1]
+        c12l0[:,:,3,3] =1
 
-        l0tol1 = l0tol1[:,:,:,[True,True,False,True],:][:,:,:,:,[True,True,False,True]]
+        # transformation from current lidar frame to adjacent lidar frame
+        l02l1 = c02l0.matmul(torch.inverse(c12l0))[:,0,:,:].view(n,1,1,4,4)
+        '''
+          c02l0 * inv（c12l0）
+        = c02l0 * inv(l12l0 * c12l1)
+        = c02l0 * inv(c12l1) * inv(l12l0)
+        = l02l1 # c02l0==c12l1
+        '''
+
+        l02l1 = l02l1[:,:,:,[True,True,False,True],:][:,:,:,:,[True,True,False,True]]
 
         feat2bev = torch.zeros((3,3),dtype=grid.dtype).to(grid)
         feat2bev[0, 0] = self.img_view_transformer.dx[0]
@@ -268,7 +277,7 @@ class BEVDetSequentialES(BEVDetSequential):
         feat2bev[1, 2] = self.img_view_transformer.bx[1] - self.img_view_transformer.dx[1] / 2.
         feat2bev[2, 2] = 1
         feat2bev = feat2bev.view(1,3,3)
-        tf = torch.inverse(feat2bev).matmul(l0tol1).matmul(feat2bev)
+        tf = torch.inverse(feat2bev).matmul(l02l1).matmul(feat2bev)
 
         # transform and normalize
         grid = tf.matmul(grid)
