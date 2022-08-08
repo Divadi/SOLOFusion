@@ -39,6 +39,19 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+def construct_input(input_shape):
+    rot = torch.eye(3).float().cuda().view(1,3,3)
+    rot = torch.cat([rot for _ in range(6)],axis=0).view(1,6,3,3)
+
+    input =dict(img_inputs=[
+        torch.ones(()).new_empty(
+                (1, 6, 3, *input_shape)).cuda(),
+        rot,
+        torch.ones((1, 6, 3)).cuda(),
+        rot,
+        rot,
+        torch.ones((1, 6, 3)).cuda()])
+    return input
 
 def main():
 
@@ -82,7 +95,7 @@ def main():
             'FLOPs counter is currently not supported for {}'.format(
                 model.__class__.__name__))
 
-    flops, params = get_model_complexity_info(model, input_shape)
+    flops, params = get_model_complexity_info(model, input_shape, input_constructor=construct_input)
     split_line = '=' * 30
     print(f'{split_line}\nInput shape: {input_shape}\n'
           f'Flops: {flops}\nParams: {params}\n{split_line}')
