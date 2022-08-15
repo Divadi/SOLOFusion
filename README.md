@@ -4,6 +4,7 @@
  ![Illustrating the performance of the proposed BEVDet on the nuScenes val set](./resources/nds-fps.png)
  
 ## News
+* **2022.08.15** Support FP16 training for BEVDet series that with image view backbone type of ResNet.
 * **2022.07.29** Support BEVDepth.
 * **2022.07.26** Add configs and pretrained models of bevdet-r50 and bevdet4d-r50.
 * **2022.07.13** Support bev-pool proposed in [BEVFusion](https://github.com/mit-han-lab/bevfusion), which will speed up the training process of bevdet-tiny by +25%.
@@ -16,6 +17,7 @@
 
 
 ## Main Results
+#### FP32
 | Method            | mAP      | NDS     | FPS    |Mem (MB) |   Model | Log
 |--------|----------|---------|--------|-------------|-----|-------|
 | [**BEVDet-R50**](configs/bevdet/bevdet-r50.py)       | 29.9     | 37.7    | 16.7   | 5,007  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)   | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
@@ -27,6 +29,13 @@
 | [**BEVDet4D-Tiny**](configs/bevdet4d/bevdet4d-sttiny.py) | 33.8     | 47.6    | 15.5   |9,255| [google](https://drive.google.com/file/d/1nyQfp7Gt-xbXDzcw5ritmFb8lvPM1H6n/view?usp=sharing) / [baidu](https://pan.baidu.com/s/1n9sVR6FnfmMccSJFTsVKfw?pwd=nzi1)        | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) /[baidu](https://pan.baidu.com/s/1uv81CE34AhYbrz4247QcYA?pwd=k2ms) 
 * *Thirdparty implementation, please refer to [Megvii](https://github.com/Megvii-BaseDetection/BEVDepth) for official implementation.
 * Memory is tested in the training process with batch 1 and without using torch.checkpoint.
+#### FP16
+| Method            | mAP      | NDS     | FPS    |Mem (MB) |   Model | Log
+|--------|----------|---------|--------|-------------|-----|-------|
+| [**BEVDet-R50-FP16**](configs/bevdet/bevdet-r50-fp16.py)       | 29.6     | 37.4    | 16.7   | 3,931  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)   | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
+| [**BEVDet4D-R50-FP16**](configs/bevdet4d/bevdet4d-r50-fp16.py) | 32.7     | 46.0    | 16.7   |5,145| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)
+| [**BEVDepth4D-R50-FP16***](configs/bevdepth/bevdepth4d-r50-fp16.py) | 36.4    | 48.4   | 15.7   |5,361| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
+
 ## Get Started
 #### Installation and Data Preparation
 Please see [getting_started.md](docs/getting_started.md)
@@ -39,17 +48,17 @@ python tools/analysis_tools/benchmark.py configs/bevdet/bevdet-sttiny-accelerate
 python tools/analysis_tools/benchmark.py configs/bevdet/bevdet-sttiny.py $checkpoint
 ```
 #### Estimate the flops of BEVDet
-For bevdet4d, the FLOP result involves the current frame only.  
+Note: For bevdet4d, the FLOP result involves the current frame only.  
 ```shell
 python tools/analysis_tools/get_flops.py configs/bevdet/bevdet-sttiny.py --shape 256 704
 python tools/analysis_tools/get_flops.py configs/bevdet4d/bevdet4d-sttiny.py --shape 256 704
 ```
 #### Visualize the predicted result with open3d.
-**Official implementation. (Visualization locally only)**
+* Official implementation. (Visualization locally only)
 ```shell
 python tools/test.py $config $checkpoint --show --show-dir $save-path
 ```
-**Private implementation. (Visualization remotely/locally)**
+* Private implementation. (Visualization remotely/locally)
 ```shell
 python tools/test.py $config $checkpoint --format-only --eval-options jsonfile_prefix=$savepath
 python tools/analysis_tools/vis.py $savepath/pts_bbox/results_nusc.json

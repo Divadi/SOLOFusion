@@ -307,7 +307,7 @@ class NuScenesDataset(Custom3DDataset):
             if self.img_info_prototype == 'bevdet_sequential':
                 bbox = input_dict['ann_info']['gt_bboxes_3d'].tensor
                 if 'abs' in self.speed_mode:
-                    bbox[:, 7:9] = bbox[:, 7:9] + torch.from_numpy(info['velo']).view(1,2)
+                    bbox[:, 7:9] = bbox[:, 7:9] + torch.from_numpy(info['velo']).view(1,2).to(bbox)
                 if input_dict['adjacent_type'] == 'next' and not self.fix_direction:
                     bbox[:, 7:9] = -bbox[:, 7:9]
                 if 'dis' in self.speed_mode:

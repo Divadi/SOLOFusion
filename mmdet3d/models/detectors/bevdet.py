@@ -1,13 +1,12 @@
 # Copyright (c) Phigent Robotics. All rights reserved.
 
-import os
 import torch
+from mmcv.runner import force_fp32
 import torch.nn.functional as F
 
 from mmdet.models import DETECTORS
 from .centerpoint import CenterPoint
 from .. import builder
-from mmdet3d.core import bbox3d2result
 
 
 @DETECTORS.register_module()
@@ -236,6 +235,7 @@ class BEVDetSequentialES(BEVDetSequential):
         self.before=before
         self.interpolation_mode=interpolation_mode
 
+    @force_fp32()
     def shift_feature(self, input, trans, rots):
         n, c, h, w = input.shape
         _,v,_ =trans[0].shape
@@ -358,6 +358,7 @@ class BEVDepth_Base():
             result_dict['pts_bbox'] = pts_bbox
         return bbox_list
 
+    @force_fp32()
     def get_depth_loss(self, depth_gt, depth):
         B, N, H, W = depth_gt.shape
         loss_weight = (~(depth_gt == 0)).reshape(B, N, 1, H, W).expand(B, N,

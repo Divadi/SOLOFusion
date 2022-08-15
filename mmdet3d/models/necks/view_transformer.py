@@ -292,7 +292,8 @@ class SELikeModule(nn.Module):
 
 @NECKS.register_module()
 class ViewTransformerLSSBEVDepth(ViewTransformerLiftSplatShoot):
-    def __init__(self, extra_depth_net, loss_depth_weight, se_config=dict(), **kwargs):
+    def __init__(self, extra_depth_net, loss_depth_weight, se_config=dict(),
+                 dcn_config=dict(bias=True), **kwargs):
         super(ViewTransformerLSSBEVDepth, self).__init__(**kwargs)
         self.loss_depth_weight = loss_depth_weight
         self.extra_depthnet = builder.build_backbone(extra_depth_net)
@@ -312,7 +313,7 @@ class ViewTransformerLSSBEVDepth(ViewTransformerLiftSplatShoot):
                                                    stride=1,
                                                    padding=1,
                                                    dilation=1,
-                                                   bias=True),
+                                                   **dcn_config),
                                    nn.BatchNorm2d(extra_depth_net['num_channels'][0])
                                   ])
         self.se = SELikeModule(self.numC_input,
