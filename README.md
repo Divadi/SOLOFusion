@@ -4,6 +4,7 @@
  ![Illustrating the performance of the proposed BEVDet on the nuScenes val set](./resources/nds-fps.png)
  
 ## News
+* **2022.08.26** A blog in chinese for code explanation. [BEVDet系列源码解读](https://zhuanlan.zhihu.com/p/557613388)
 * **2022.08.15** Support FP16 training for BEVDet series that with image view backbone type of ResNet.
 * **2022.07.29** Support BEVDepth.
 * **2022.07.26** Add configs and pretrained models of bevdet-r50 and bevdet4d-r50.
