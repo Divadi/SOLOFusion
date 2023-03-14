@@ -45,12 +45,12 @@ python tools/swap_ema_and_non_ema.py work_dirs/r50-fp16_phase2/iter_10536.pth
 ## Model Zoo
 |Method|mAP|NDS|Model|Log
 |-|-|-|-|-|
-|[**SOLOFusion Short-Only**](configs/solofusion/r50-shortonly-fp16.py)|34.4|39.1||
-|[**SOLOFusion Long-Only**](configs/solofusion/r50-longonly-fp16_phase2.py)|38.7|48.5||
-|[**SOLOFusion Both**](configs/solofusion/r50-fp16_phase2.py)|40.6|49.7||
-|[**SOLOFusion Both + CBGS**](configs/solofusion/r50-fp16_phase2.py)|43.0|53.8||
+|[**SOLOFusion Short-Only**](configs/solofusion/r50-shortonly-fp16.py)|34.4|39.1|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-shortonly-fp16_ema.pth)|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-shortonly-fp16.log)
+|[**SOLOFusion Long-Only**](configs/solofusion/r50-longonly-fp16_phase2.py)|38.7|48.5|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-longonly-fp16_phase2_ema.pth)|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-longonly-fp16_phase2.log)
+|[**SOLOFusion Both**](configs/solofusion/r50-fp16_phase2.py)|40.6|49.7|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-fp16_phase2_ema.pth)|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-fp16_phase2.log)
+|[**SOLOFusion Both + CBGS**](configs/solofusion/r50-fp16_phase2.py)|43.0|53.8|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-fp16-cbgs_phase2_ema.pth)|[Link](https://github.com/Divadi/SOLOFusion/releases/download/v0.1.0/r50-fp16-cbgs_phase2.log)
 
-## Acknowledgement
+## Acknowledgements
 We thank numerous excellent works and open-source codebases:
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d)
 - [BEVDet](https://github.com/HuangJunJie2017/BEVDet)
