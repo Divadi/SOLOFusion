@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmdet.datasets.builder import build_dataloader
-from .builder import DATASETS, build_dataset
+# from mmdet.datasets.builder import build_dataloader
+from .builder import DATASETS, build_dataset, build_dataloader
 from .custom_3d import Custom3DDataset
 from .custom_3d_seg import Custom3DSegDataset
 from .kitti_dataset import KittiDataset

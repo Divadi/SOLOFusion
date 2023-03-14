@@ -1,95 +1,70 @@
-# BEVDet
+<div align="center">
 
+# Time Will Tell: New Outlooks and A Baseline for Temporal Multi-View 3D Object Detection
+</div>
 
- ![Illustrating the performance of the proposed BEVDet on the nuScenes val set](./resources/nds-fps.png)
- 
-## News
-* **2022.08.26** A blog in chinese for code explanation. [BEVDet系列源码解读](https://zhuanlan.zhihu.com/p/557613388)
-* **2022.08.15** Support FP16 training for BEVDet series that with image view backbone type of ResNet.
-* **2022.07.29** Support BEVDepth.
-* **2022.07.26** Add configs and pretrained models of bevdet-r50 and bevdet4d-r50.
-* **2022.07.13** Support bev-pool proposed in [BEVFusion](https://github.com/mit-han-lab/bevfusion), which will speed up the training process of bevdet-tiny by +25%.
-* **2022.07.08** Support visualization remotely! Please refer to [Get Started](https://github.com/HuangJunJie2017/BEVDet#get-started) for usage.
-* **2022.06.29** Support acceleration of the Lift-Splat-Shoot view transformer! Please refer to \[[Technical Report](https://arxiv.org/abs/2112.11790)\] for detailed introduction and [Get Started](https://github.com/HuangJunJie2017/BEVDet#get-started) for testing BEVDet with acceleration.
-* **2022.06.01** We release the code and models of both BEVDet and BEVDet4D!
-* **2022.04.01** We propose BEVDet4D to lift the scalable BEVDet paradigm from the spatial-only 3D space to the spatial-temporal 4D space. Technical report is released on arixv. \[[BEVDet4D](https://arxiv.org/abs/2203.17054)\].
-* **2022.04.01** We upgrade the BEVDet paradigm with some modifications to improve its performance and inference speed. **Thchnical report of BEVDet has been updated.** \[[BEVDetv1](https://arxiv.org/abs/2112.11790)\].
-* **2021.12.23** BEVDet is now on arxiv. \[[BEVDet](https://arxiv.org/abs/2112.11790)\].
+<p align="center">
+    <img src="./method.png"/ width="900">
+</p>
 
+## News!
+- [2023/3/14]: Code Released.
+- [2022/10/6]: SOLOFusion achieves SOTA on Camera-Only [nuScenes Detection Task](https://nuscenes.org/object-detection?externalData=all&mapData=all&modalities=Camera) with **54.0% mAP** and **61.9% NDS**!
+- [2022/10/5]: Paper released on [arXiv](https://arxiv.org/abs/2210.02443).
 
-## Main Results
-#### FP32
-| Method            | mAP      | NDS     | FPS    |Mem (MB) |   Model | Log
-|--------|----------|---------|--------|-------------|-----|-------|
-| [**BEVDet-R50**](configs/bevdet/bevdet-r50.py)       | 29.9     | 37.7    | 16.7   | 5,007  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)   | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
-| [**BEVDepth-R50***](configs/bevdepth/bevdepth-r50.py) | 33.3     | 40.6    | 15.7   |5,185| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
-| [**BEVDet4D-R50**](configs/bevdet4d/bevdet4d-r50.py) | 32.2     | 45.7    | 16.7   |7,089| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
-| [**BEVDepth4D-R50***](configs/bevdepth/bevdepth4d-r50.py) | 36.1    | 48.5   | 15.7   |7,365| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
-| -| -    | -   | -   |-| -| -
-| [**BEVDet-Tiny**](configs/bevdet/bevdet-sttiny.py)       | 30.8     | 40.4    | 15.6   |6,187| [google](https://drive.google.com/file/d/10innSxqN7NgbktrlfPjWjE7gz-xpbJO_/view?usp=sharing) / [baidu](https://pan.baidu.com/s/1DBxJXgtrW1_7McPSM_koyA?pwd=tbac)        | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) /[baidu](https://pan.baidu.com/s/1uv81CE34AhYbrz4247QcYA?pwd=k2ms) 
-| [**BEVDet4D-Tiny**](configs/bevdet4d/bevdet4d-sttiny.py) | 33.8     | 47.6    | 15.5   |9,255| [google](https://drive.google.com/file/d/1nyQfp7Gt-xbXDzcw5ritmFb8lvPM1H6n/view?usp=sharing) / [baidu](https://pan.baidu.com/s/1n9sVR6FnfmMccSJFTsVKfw?pwd=nzi1)        | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) /[baidu](https://pan.baidu.com/s/1uv81CE34AhYbrz4247QcYA?pwd=k2ms) 
-* *Thirdparty implementation, please refer to [Megvii](https://github.com/Megvii-BaseDetection/BEVDepth) for official implementation.
-* Memory is tested in the training process with batch 1 and without using torch.checkpoint.
-#### FP16
-| Method            | mAP      | NDS     | FPS    |Mem (MB) |   Model | Log
-|--------|----------|---------|--------|-------------|-----|-------|
-| [**BEVDet-R50-FP16**](configs/bevdet/bevdet-r50-fp16.py)       | 29.6     | 37.4    | 16.7   | 3,931  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)   | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
-| [**BEVDet4D-R50-FP16**](configs/bevdet4d/bevdet4d-r50-fp16.py) | 32.7     | 46.0    | 16.7   |5,145| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)
-| [**BEVDepth4D-R50-FP16***](configs/bevdepth/bevdepth4d-r50-fp16.py) | 36.4    | 48.4   | 15.7   |5,361| [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing)  | [google](https://drive.google.com/drive/folders/1VnJv-dNb6-gkKTq7uC_Q6YsRq_q3NI-t?usp=sharing) 
+## Abstract
+While recent camera-only 3D detection methods leverage multiple timesteps, the limited history they use significantly hampers the extent to which temporal fusion can improve object perception. Observing that existing works' fusion of multi-frame images are instances of temporal stereo matching, we find that performance is hindered by the interplay between 1) the low granularity of matching resolution and 2) the sub-optimal multi-view setup produced by limited history usage. Our theoretical and empirical analysis demonstrates that the optimal temporal difference between views varies significantly for different pixels and depths, making it necessary to fuse many timesteps over long-term history. Building on our investigation, we propose to generate a cost volume from a long history of image observations, compensating for the coarse but efficient matching resolution with a more optimal multi-view matching setup. Further, we augment the per-frame monocular depth predictions used for long-term, coarse matching with short-term, fine-grained matching and find that long and short term temporal fusion are highly complementary. While maintaining high efficiency, our framework sets new state-of-the-art on nuScenes, achieving first place on the test set and outperforming previous best art by **5.2\% mAP** and **3.7\% NDS** on the validation set.
 
 ## Get Started
-#### Installation and Data Preparation
 Please see [getting_started.md](docs/getting_started.md)
 
-#### Estimate the inference speed of BEVDet
+## Training
+By default, all configs are set-up to train with 4 GPUs, 16 samples per gpu. Please reference the configs and change as needed. Models using long-term fusion are trained in 2 phases, similar to NeuralRecon. If # of GPUs or batch size is changed, the resume_from parameter in phase2 configs must be updated.
+To train R50 backbone without CBGS:
+
+**Phase 1:**
 ```shell
-# with acceleration
-python tools/analysis_tools/benchmark.py configs/bevdet/bevdet-sttiny-accelerated.py $checkpoint
-# without acceleration
-python tools/analysis_tools/benchmark.py configs/bevdet/bevdet-sttiny.py $checkpoint
+./tools/dist_train.sh configs/solofusion/r50-fp16_phase1.py 4 --gpus 4 --autoscale-lr --no-validate
 ```
-#### Estimate the flops of BEVDet
-Note: For bevdet4d, the FLOP result involves the current frame only.  
+**Phase 2:**
 ```shell
-python tools/analysis_tools/get_flops.py configs/bevdet/bevdet-sttiny.py --shape 256 704
-python tools/analysis_tools/get_flops.py configs/bevdet4d/bevdet4d-sttiny.py --shape 256 704
+./tools/dist_train.sh configs/solofusion/r50-fp16_phase2.py 4 --gpus 4 --autoscale-lr --no-validate
 ```
-#### Visualize the predicted result with open3d.
-* Official implementation. (Visualization locally only)
+Note that `--autoscale-lr` is important.
+
+## Inference
+Our model must process data samples sequentially. This is done during training via our [custom sampler](mmdet3d/datasets/samplers/infinite_group_each_sample_in_batch_sampler.py) using IterBasedRunner but has not been adapted for inference. Thus, inference must be done on a single-gpu, single-batch size. In addition, due to some [issues in MMCV](https://github.com/open-mmlab/mmcv/issues/2195) in using EMA with IterBasedRunner, EMA weights must be transferred to main weights before inference. 
+
+**Run the following commands:**
 ```shell
-python tools/test.py $config $checkpoint --show --show-dir $save-path
+python tools/swap_ema_and_non_ema.py work_dirs/r50-fp16_phase2/iter_10536.pth
+
+./tools/dist_test.sh configs/solofusion/r50-fp16_phase2.py work_dirs/r50-fp16_phase2/iter_10536_ema.pth 1 --eval bbox
 ```
-* Private implementation. (Visualization remotely/locally)
-```shell
-python tools/test.py $config $checkpoint --format-only --eval-options jsonfile_prefix=$savepath
-python tools/analysis_tools/vis.py $savepath/pts_bbox/results_nusc.json
-```
+
+## Model Zoo
+|Method|mAP|NDS|Model|Log
+|-|-|-|-|-|
+|[**SOLOFusion Short-Only**](configs/solofusion/r50-shortonly-fp16.py)|34.4|39.1||
+|[**SOLOFusion Long-Only**](configs/solofusion/r50-longonly-fp16_phase2.py)|38.7|48.5||
+|[**SOLOFusion Both**](configs/solofusion/r50-fp16_phase2.py)|40.6|49.7||
+|[**SOLOFusion Both + CBGS**](configs/solofusion/r50-fp16_phase2.py)|43.0|53.8||
 
 ## Acknowledgement
-This project is not possible without multiple great open-sourced code bases. We list some notable examples below.
-* [open-mmlab](https://github.com/open-mmlab) 
-* [CenterPoint](https://github.com/tianweiy/CenterPoint)
-* [Lift-Splat-Shoot](https://github.com/nv-tlabs/lift-splat-shoot)
-* [Swin Transformer](https://github.com/microsoft/Swin-Transformer)
+We thank numerous excellent works and open-source codebases:
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d)
+- [BEVDet](https://github.com/HuangJunJie2017/BEVDet)
+- [BEVDepth](https://github.com/Megvii-BaseDetection/BEVDepth)
+- [BEVStereo](https://github.com/Megvii-BaseDetection/BEVStereo)
+- [BEVFusion](https://github.com/mit-han-lab/bevfusion)
 
-Beside, there are some other attractive works extend the boundary of BEVDet. 
-* [BEVerse](https://github.com/zhangyp15/BEVerse)  for multi-task learning.
-* [BEVFusion](https://github.com/mit-han-lab/bevfusion)  for acceleration, multi-task learning, and multi-sensor fusion. (Note: The acceleration method is a concurrent work of that of BEVDet and has some superior characteristics like memory saving and completely equivalent.)
-
-## Bibtex
-If this work is helpful for your research, please consider citing the following BibTeX entry.
+## BibTeX
+If this work is helpful for your research, please consider citing:
 ```
-@article{huang2022bevdet4d,
-  title={BEVDet4D: Exploit Temporal Cues in Multi-camera 3D Object Detection},
-  author={Huang, Junjie and Huang, Guan},
-  journal={arXiv preprint arXiv:2203.17054},
-  year={2022}
-}
-
-@article{huang2021bevdet,
-  title={BEVDet: High-performance Multi-camera 3D Object Detection in Bird-Eye-View},
-  author={Huang, Junjie and Huang, Guan and Zhu, Zheng and Yun, Ye and Du, Dalong},
-  journal={arXiv preprint arXiv:2112.11790},
-  year={2021}
+@article{Park2022TimeWT,
+  title={Time Will Tell: New Outlooks and A Baseline for Temporal Multi-View 3D Object Detection},
+  author={Park, Jinhyung and Xu, Chenfeng and Yang, Shijia and Keutzer, Kurt and Kitani, Kris and Tomizuka, Masayoshi and Zhan, Wei},
+  booktitle={International Conference on Learning Representations},
+  year={2023}
 }
 ```

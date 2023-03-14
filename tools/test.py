@@ -85,6 +85,7 @@ def parse_args():
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument('--allow_no_ema', action='store_true', default=False)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -144,6 +145,10 @@ def main():
             for ds_cfg in cfg.data.test:
                 ds_cfg.pipeline = replace_ImageToTensor(ds_cfg.pipeline)
 
+    assert samples_per_gpu == 1, \
+        ("You seem to be doing inference with batch_size > 1. Sequential "
+         "sampling is not supported with batch_size > 1 during testing.")
+
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
         distributed = False
@@ -165,6 +170,21 @@ def main():
         shuffle=False)
 
     # build the model and load checkpoint
+    if cfg.runner['type'] == "IterBasedRunner" and not args.allow_no_ema:	
+        assert "_ema.pth" in args.checkpoint, \
+            ("Your checkpoint name does not contain '_ema.pth'"
+             "Please make sure you have swapped ema & non-ema weights using "
+             "tools/swap_ema_and_non_ema.py before running evaluation. "
+             "See https://github.com/open-mmlab/mmcv/issues/2195 for why this "
+             "is necessary. If you are already aware of this and you want to"
+             "proceed, you can override this check with the flag"
+             "--allow-no-ema.")
+
+    if cfg.runner['type'] == "IterBasedRunner":
+        assert get_dist_info()[1] == 1, \
+            ("You seem to be doing multi-gpu testing. Sequential sampling is "
+             "not supported with multi-gpu testing. ")
+               
     cfg.model.train_cfg = None
     model = build_model(cfg.model, test_cfg=cfg.get('test_cfg'))
     fp16_cfg = cfg.get('fp16', None)

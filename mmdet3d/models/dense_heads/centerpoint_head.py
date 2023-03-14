@@ -634,6 +634,7 @@ class CenterHead(BaseModule):
             loss_dict[f'%stask{task_id}.loss_heatmap'%(self.loss_prefix)] = loss_heatmap
         return loss_dict
 
+    @force_fp32(apply_to=('preds_dicts', ))
     def get_bboxes(self, preds_dicts, img_metas, img=None, rescale=False):
         """Generate bboxes from bbox head predictions.
 

@@ -7,6 +7,7 @@ from .pointnet2_sa_ssg import PointNet2SASSG
 from .second import SECOND
 from .resnet import ResNetForBEVDet
 from .swin import SwinTransformer
+from .convnext import ConvNeXt
 
 __all__ = [
     'ResNet', 'ResNetV1d', 'ResNeXt', 'SSDVGG', 'HRNet', 'NoStemRegNet',

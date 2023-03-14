@@ -1,95 +1,38 @@
-Modify from the official mmdet3d [getting_started.md](https://github.com/open-mmlab/mmdetection3d/blob/master/docs/en/getting_started.md)
+Modified from BEVDet [getting_started.md](https://github.com/HuangJunJie2017/BEVDet/blob/master/docs/getting_started.md)
 
 # Prerequisites
-BEVDet is developed with the following version of modules.
-- Linux or macOS (Windows is not currently officially supported)
-- Python 3.7
-- PyTorch 1.9.0
-- CUDA 11.3.1 
-- GCC 7.3.0
-- MMCV==1.3.13
+Our code is tested on the following environment:
+- Linux
+- Python 3.8
+- PyTorch 1.10.1
+- Cudatoolkit 11.3.1 
+- GCC 9.4.0
+- MMCV==1.3.16
 - MMDetection==2.14.0
 - MMSegmentation==0.14.1
+- MMDetection3d==0.17.2
 
 
 # Installation
-
-**a. Create a conda virtual environment and activate it.**
-
+Please reference BEVDet's environment creation. A from-scratch script is as follows:
 ```shell
-conda create -n bevdet python=3.7 -y
-conda activate bevdet
-```
-
-**b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/).**
-
-```shell
-conda install -c pytorch pytorch torchvision -y
-```
-
-**c. Install [MMCV](https://mmcv.readthedocs.io/en/latest/).**
-```shell
-pip install mmcv-full==1.3.13
-```
-
-**d. Install [MMDetection](https://github.com/open-mmlab/mmdetection).**
-
-```shell
+conda create -n solofusion python=3.8 -y
+conda activate solofusion
+conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge -y
+pip install mmcv-full==1.3.16 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html
 pip install mmdet==2.14.0
-```
-
-**e. Install [MMSegmentation](https://github.com/open-mmlab/mmsegmentation).**
-
-```shell
 pip install mmsegmentation==0.14.1
-```
-
-
-**f. Clone the BEVDet repository.**
-
-```shell
-git clone https://github.com/HuangJunJie2017/BEVDet.git
-cd BEVDet
-```
-
-**g.Install build requirements and then install BEVDet.**
-
-```shell
-pip install -v -e .  # or "python setup.py develop"
-```
-
-
-## A from-scratch setup script
-
-Here is a full script for setting up MMdetection3D with conda.
-
-```shell
-conda create -n bevdet python=3.7 -y
-conda activate bevdet
-
-# install latest PyTorch prebuilt with the default prebuilt CUDA version (usually the latest)
-conda install -c pytorch pytorch torchvision -y
-
-# install mmcv
-pip install mmcv-full==1.3.13
-
-# install mmdetection
-pip install mmdet==2.14.0
-
-# install mmsegmentation
-pip install mmsegmentation==0.14.1
-
-# install BEVDet
-git clone https://github.com/HuangJunJie2017/BEVDet.git
-cd BEVDet
+pip install -r requirements.txt
 pip install -v -e .
+pip install pillow==8.4.0 # Important! https://github.com/mit-han-lab/bevfusion/issues/63
+pip install setuptools==59.5.0 # If you run into AttributeError: module 'distutils' has no attribute 'version'
 ```
 
 # Data Preparation
 
 **a. Please refer to [nuScenes](docs/datasets/nuscenes_det.md) for initial preparation.**
 
-**b. Prepare dataset specific for BEVDet4D.**
 ```shell
-python tools/data_converter/prepare_nuscenes_for_bevdet4d.py
+python tools/create_data.py nuscenes --root-path ./data/nuscenes --out-dir ./data/nuscenes --extra-tag nuscenes
 ```
+Note that L75-L82 in `tools/create_data.py` can be skipped; just generating nuscenes_infos_train.pkl & nuscenes_infos_val.pkl is enough

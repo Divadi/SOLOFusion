@@ -1,17 +1,21 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import mmcv
 import torch
+import math
 import numpy as np
 import pyquaternion
 import tempfile
 from nuscenes.utils.data_classes import Box as NuScenesBox
 from os import path as osp
+import copy
+from collections import defaultdict
 
 from mmdet.datasets import DATASETS
 from ..core import show_result
 from ..core.bbox import Box3DMode, Coord3DMode, LiDARInstance3DBoxes
 from .custom_3d import Custom3DDataset
 from .pipelines import Compose
+from ..utils import nuscenes_get_rt_matrix
 
 
 @DATASETS.register_module()
@@ -133,7 +137,9 @@ class NuScenesDataset(Custom3DDataset):
                  next_only=False,
                  test_adj = 'prev',
                  fix_direction=False,
-                 test_adj_ids=None):
+                 test_adj_ids=None,
+                 use_sequence_group_flag=False,
+                 sequences_split_num=1):
         self.load_interval = load_interval
         self.use_valid_flag = use_valid_flag
         super().__init__(
@@ -169,6 +175,52 @@ class NuScenesDataset(Custom3DDataset):
         self.test_adj = test_adj
         self.fix_direction = fix_direction
         self.test_adj_ids = test_adj_ids
+        
+        self.use_sequence_group_flag = use_sequence_group_flag
+        self.sequences_split_num = sequences_split_num
+        # sequences_split_num splits eacgh sequence into sequences_split_num parts.
+        if self.test_mode:
+            assert self.sequences_split_num == 1
+        if self.use_sequence_group_flag:
+            self._set_sequence_group_flag() # Must be called after load_annotations b/c load_annotations does sorting.
+
+    def _set_sequence_group_flag(self):
+        """
+        Set each sequence to be a different group
+        """
+        res = []
+
+        curr_sequence = 0
+        for idx in range(len(self.data_infos)):
+            if idx != 0 and len(self.data_infos[idx]['sweeps']) == 0:
+                # Not first frame and # of sweeps is 0 -> new sequence
+                curr_sequence += 1
+            res.append(curr_sequence)
+
+        self.flag = np.array(res, dtype=np.int64)
+
+        if self.sequences_split_num != 1:
+            if self.sequences_split_num == 'all':
+                self.flag = np.array(range(len(self.data_infos)), dtype=np.int64)
+            else:
+                bin_counts = np.bincount(self.flag)
+                new_flags = []
+                curr_new_flag = 0
+                for curr_flag in range(len(bin_counts)):
+                    curr_sequence_length = np.array(
+                        list(range(0, 
+                                bin_counts[curr_flag], 
+                                math.ceil(bin_counts[curr_flag] / self.sequences_split_num)))
+                        + [bin_counts[curr_flag]])
+
+                    for sub_seq_idx in (curr_sequence_length[1:] - curr_sequence_length[:-1]):
+                        for _ in range(sub_seq_idx):
+                            new_flags.append(curr_new_flag)
+                        curr_new_flag += 1
+
+                assert len(new_flags) == len(self.flag)
+                assert len(np.bincount(new_flags)) == len(np.bincount(self.flag)) * self.sequences_split_num
+                self.flag = np.array(new_flags, dtype=np.int64)
 
     def get_cat_ids(self, idx):
         """Get category distribution of single scene.
@@ -300,6 +352,29 @@ class NuScenesDataset(Custom3DDataset):
                                        curr=info,
                                        adjacent=info_adj,
                                        adjacent_type=adjacent))
+
+            if self.use_sequence_group_flag:
+                input_dict['sample_index'] = index
+                input_dict['sequence_group_idx'] = self.flag[index]
+                input_dict['start_of_sequence'] = index == 0 or self.flag[index - 1] != self.flag[index]
+                # Get a transformation matrix from current keyframe lidar to previous keyframe lidar
+                # if they belong to same sequence.
+                if not input_dict['start_of_sequence']:
+                    input_dict['curr_to_prev_lidar_rt'] = torch.FloatTensor(nuscenes_get_rt_matrix(
+                        self.data_infos[index], self.data_infos[index - 1],
+                        "lidar", "lidar"))
+                    input_dict['prev_lidar_to_global_rt'] = torch.FloatTensor(nuscenes_get_rt_matrix(
+                        self.data_infos[index - 1], self.data_infos[index],
+                        "lidar", "global")) # TODO: Note that global is same for all.
+                else:
+                    input_dict['curr_to_prev_lidar_rt'] = torch.eye(4).float()
+                    input_dict['prev_lidar_to_global_rt'] = torch.FloatTensor(nuscenes_get_rt_matrix(
+                        self.data_infos[index], self.data_infos[index],
+                        "lidar", "global"))
+
+                input_dict['global_to_curr_lidar_rt'] = torch.FloatTensor(nuscenes_get_rt_matrix(
+                    self.data_infos[index], self.data_infos[index],
+                    "global", "lidar"))
 
         if not self.test_mode:
             annos = self.get_ann_info(index)

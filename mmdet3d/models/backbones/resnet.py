@@ -6,13 +6,26 @@ import torch.utils.checkpoint as checkpoint
 
 from mmdet.models import BACKBONES
 
+from mmcv.cnn.bricks.registry import NORM_LAYERS
+
+
+@NORM_LAYERS.register_module()
+class IdentityNormLayer(nn.Module):
+    # Fake norm layer to easily fit into "norm_cfg". Just an identity layer.
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+    
+    def forward(self, x):
+        return x
+
 
 @BACKBONES.register_module()
 class ResNetForBEVDet(nn.Module):
     def __init__(self, numC_input, num_layer=[2,2,2], num_channels=None, stride=[2,2,2],
                  backbone_output_ids=None, norm_cfg=dict(type='BN'),
-                 with_cp=False, block_type='Basic',):
+                 with_cp=False, block_type='Basic'):
         super(ResNetForBEVDet, self).__init__()
+        self.numC_input = numC_input
         #build backbone
         # assert len(num_layer)>=3
         assert len(num_layer)==len(stride)
@@ -49,6 +62,9 @@ class ResNetForBEVDet(nn.Module):
     def forward(self, x):
         feats = []
         x_tmp = x
+        if -1 in self.backbone_output_ids:
+            feats.append(x)
+
         for lid, layer in enumerate(self.layers):
             if self.with_cp:
                 x_tmp = checkpoint.checkpoint(layer, x_tmp)

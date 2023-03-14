@@ -30,6 +30,7 @@ class SECONDFPN(BaseModule):
                  norm_cfg=dict(type='BN', eps=1e-3, momentum=0.01),
                  upsample_cfg=dict(type='deconv', bias=False),
                  conv_cfg=dict(type='Conv2d', bias=False),
+                 final_conv_feature_dim=None,
                  use_conv_for_no_stride=False,
                  init_cfg=None):
         # if for GroupNorm,
@@ -64,6 +65,17 @@ class SECONDFPN(BaseModule):
                                     nn.ReLU(inplace=True))
             deblocks.append(deblock)
         self.deblocks = nn.ModuleList(deblocks)
+        
+        if final_conv_feature_dim is not None:
+            self.final_feature_dim = final_conv_feature_dim
+            self.final_conv = nn.Sequential(
+                build_conv_layer(conv_cfg, in_channels=sum(out_channels), out_channels=sum(out_channels) // 2, kernel_size=3, stride=1, padding=1),
+                build_norm_layer(norm_cfg, sum(out_channels) // 2)[1],
+                nn.ReLU(inplace=True),
+                build_conv_layer(conv_cfg, in_channels=sum(out_channels) // 2, out_channels=final_conv_feature_dim, kernel_size=1, stride=1))
+        else:
+            self.final_feature_dim = sum(out_channels)
+            self.final_conv = None
 
         if init_cfg is None:
             self.init_cfg = [
@@ -88,4 +100,8 @@ class SECONDFPN(BaseModule):
             out = torch.cat(ups, dim=1)
         else:
             out = ups[0]
+
+        if self.final_conv is not None:
+            out = self.final_conv(out)
+
         return [out]
