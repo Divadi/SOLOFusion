@@ -4,7 +4,7 @@
 </div>
 
 <p align="center">
-    <img src="./method.png"/ width="900">
+    <img src="resources/solofusion_method.png"/ width="900">
 </p>
 
 ## News!
