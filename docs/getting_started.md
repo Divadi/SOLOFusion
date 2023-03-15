@@ -30,7 +30,7 @@ pip install setuptools==59.5.0 # If you run into AttributeError: module 'distuti
 
 # Data Preparation
 
-**a. Please refer to [nuScenes](docs/datasets/nuscenes_det.md) for initial preparation.**
+**a. Please refer to [nuScenes](datasets/nuscenes_det.md) for initial preparation.**
 
 ```shell
 python tools/create_data.py nuscenes --root-path ./data/nuscenes --out-dir ./data/nuscenes --extra-tag nuscenes
